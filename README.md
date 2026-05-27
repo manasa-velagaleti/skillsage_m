@@ -1,100 +1,118 @@
 # SkillSage
 
-SkillSage is an employee skill management web application built with Spring Boot. It helps teams record employee skills, proficiency levels, experience, and run basic skill-analysis reports.
+SkillSage is an employee skill management web application built with Spring Boot. It helps HR and engineering teams capture employee skills, proficiency, certifications and generate organization-level skill analysis to guide hiring and training.
 
 ## Key features
-- Employee registration and secure login (Spring Security, BCrypt)
-- Admin dashboard to manage users and view organization-wide skill analysis
-- Add / update employee skills and proficiencies
-- Search and filter skills
-- Simple email/OTP flows for registration and password reset
+- Secure employee registration and authentication (Spring Security + BCrypt)
+- Role-based UI: Admin and Employee views
+- Manage skills and employee-skill associations (proficiency, experience, certification source)
+- Search, filter and bulk operations for skills and employees
+- Skill analysis reports (domain coverage, proficiency distribution) for data-driven decisions
+- Email/OTP flows for onboarding and password reset
+
+## Additional analysis feature
+SkillSage includes visual analysis that aggregates skill coverage by domain and proficiency. Reports include:
+- Domain heatmap (how many employees per domain)
+- Proficiency distribution (Beginner / Intermediate / Expert)
+- Exportable summary reports (CSV)
+
+(Screenshot: images/Skill Analysis.png)
 
 ## Architecture overview
-SkillSage follows a classic layered Spring Boot architecture:
+Layered Spring Boot architecture:
+- Presentation: Thymeleaf templates in `src/main/resources/templates` and static assets in `src/main/resources/static/images`.
+- Web layer: Controllers under `com.example.controller` and `com.example.logincontroller` handle routing and views.
+- Service layer: Business logic under `com.example.service` and `com.example.logservice`.
+- Persistence: Spring Data JPA repositories (`com.example.logrepo`) with Hibernate + MySQL.
+- Security: `CustomUserDetailsService` integrates DB-backed users into Spring Security with BCrypt.
 
-- Presentation: Thymeleaf templates and static assets (src/main/resources/templates and static/images). Controller classes handle web requests and return views.
-- Service: Business logic (services under com.example.service and com.example.logservice).
-- Persistence: Spring Data JPA repositories (com.example.logrepo) and Hibernate with MySQL. Entities: Login_det, Skills, EmployeeSkill.
-- Security: Spring Security with a custom UserDetailsService (CustomUserDetailsService) and BCrypt password encoding.
-
-Sequence at startup
-1. Application starts (EmployeeApplication)
-2. Spring Data repositories and JPA initialize
-3. Hibernate creates/updates schema (spring.jpa.hibernate.ddl-auto=update)
-4. Application serves web UI on configured port (default 8001)
+Sequence at runtime:
+1. Spring Boot starts and initializes beans
+2. JPA/Hibernate bootstraps and updates schema (if configured)
+3. Web server (embedded Tomcat) serves UI on configured port
 
 ## Tech stack
-- Java 17
-- Spring Boot 3.2 (Spring Data JPA, Spring Security, Thymeleaf)
+- Java 17, Spring Boot 3.2
+- Spring Data JPA, Spring Security, Thymeleaf
 - MySQL
 - Maven (wrapper included)
 
 ## Prerequisites
 - JDK 17
-- Maven (or use the bundled ./mvnw)
-- MySQL (or run via Docker)
-- Port 8001 must be free
+- Maven (or use `./mvnw`)
+- MySQL (or Docker)
+- Port 8001 available
 
 ## Configuration
-Edit `src/main/resources/application.properties` to set datasource and mail properties. Defaults used in this repo:
+Update `src/main/resources/application.properties` for DB and mail settings. Example:
 ```
 spring.datasource.url=jdbc:mysql://localhost:3306/skillsage
 spring.datasource.username=root
-spring.datasource.password=root (change this)
+spring.datasource.password=<your-db-password>
 server.port=8001
 ```
 
-## Run (local)
-1. Create database if missing: `CREATE DATABASE skillsage;`
+## Running locally
+1. Create database: `CREATE DATABASE skillsage;`
 2. Build: `./mvnw -DskipTests package`
 3. Run: `java -jar target/your-application.jar`
-4. Open: `http://localhost:8001`
+4. Open `http://localhost:8001`
 
-Alternative: use Docker Compose (mysql + app). See `docker-compose.yaml` and `Dockerfile`.
+Or use Docker Compose: `docker-compose up --build` (mysql + app)
 
-## Database schema (high level)
-- login_details (empid PK, email UNIQUE, password (BCrypt), role, fullname, ...)
-- skills (skillid PK, domain, skillname, subdomain)
-- employee_skill (composite PK empid+skillid, proficiency, exp, cert_source)
+## Database (high level)
+- `login_details` — users (empid PK, email unique, password hashed, role, fullname)
+- `skills` — skills catalog (skillid PK, domain, skillname, subdomain)
+- `employee_skill` — mapping of employee ↔ skill with proficiency, experience, certificate source
 
-## Admin account (created during this session)
-- empid: `67890`
-- password: `567890`
+## Images and what they show
+All images live either at the repository root `images/` or under `src/main/resources/static/images/`.
 
-(Password stored hashed with BCrypt in DB.)
+Root images (screenshots):
+- `images/AdminPage.png` — Admin dashboard showing user management and reports.
+- `images/EmployeeHome.png` — Employee home page / dashboard.
+- `images/EmployeeHome2.png` — Alternative view of employee dashboard.
+- `images/Skill Analysis.png` — Skill analysis visuals (domain heatmap and proficiency charts).
+- `images/search.png` — Skill search UI and results.
+- `images/Update.png` — Update skill / edit UI.
 
-## Screenshots
-Placeholders below reference images included in the repository (images/ and static/images/):
+Static assets (served by the app):
+- `static/images/addskill.jpg`, `add.jpg`, `add-skill-icon.jpg` — Add-skill form graphics and icons.
+- `static/images/skills.png`, `report.png`, `update-skill-icon.jpg` — Skill list icons and report visuals.
+- `static/images/professional.jpg`, `professionalimg.jpg` — Decorative/team images used in landing pages.
+- `static/images/hero-img.svg`, `hero-bg-abstract.jpg` — Hero section assets for the marketing/home page.
+- `static/images/maintenance.svg`, `construction.svg` — Placeholder/maintenance graphics.
+- `static/images/register_icon.png`, `reg.png` — Registration form icons.
+- `static/images/stats-img.svg`, `tools.svg` — Analytics icons used in reports.
+- Various other images (logos, favicons, and illustrations) used across templates.
 
-- Admin dashboard
-  ![Admin Page](images/AdminPage.png)
-- Employee dashboard
-  ![Employee Home](images/EmployeeHome.png)
-- Skill analysis
-  ![Skill Analysis](images/Skill Analysis.png)
-- Search UI
-  ![Search](images/search.png)
-- Update skill UI
-  ![Update](images/Update.png)
+Each image is referenced in the templates under `src/main/resources/templates` and can be replaced with branded assets.
+
+## How to create an admin user
+For security, no credentials are stored in README. Create an admin user via SQL or the in-app admin UI:
+- SQL example:
+```
+INSERT INTO login_details (empid, email, password, role, fullname)
+VALUES ('ADMIN01', 'admin@example.com', '<bcrypt-hash>', 'ADMIN', 'Admin User');
+```
+Use a BCrypt-hashed password when inserting directly.
 
 ## Security notes
-- Change database root password after testing and avoid using root in production.
-- Revoke any GitHub PATs used during this session.
-- Consider moving credentials to environment variables or a secrets manager.
+- Do not commit secrets to the repository.
+- Use environment variables or a secrets manager for DB credentials and mail passwords.
+- Rotate any temporary credentials created during testing.
 
 ## Contribution
-Contributions welcome. Suggested next improvements:
-- Add API endpoints with OpenAPI docs
-- Replace JSP/Thymeleaf templates with a SPA front-end (React/Vue)
-- Add automated tests and CI pipeline
+Contributions welcome. Suggested improvements:
+- Add OpenAPI / Swagger docs for REST endpoints
+- Add automated tests and CI (GitHub Actions)
+- Provide sample data seeder and export features
 
 ## License
-Add a license file (e.g., MIT) if you plan to open source this project.
+Add a LICENSE file (MIT recommended) if open-sourcing.
 
 ---
 
-If you'd like, I can:
-- Rename images to remove spaces and update README links
-- Commit and push README to the remote repo
-- Generate API endpoint docs and an ER diagram
-Tell me which of the above to do next.
+This README was updated to remove sensitive credentials and provide a clear project overview, architecture and image explanations. Commit and push ready. If you'd like, I can also:
+- Rename images (remove spaces) and update links
+- Generate a short ER diagram and API reference
