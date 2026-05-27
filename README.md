@@ -65,28 +65,42 @@ Or use Docker Compose: `docker-compose up --build` (mysql + app)
 - `skills` — skills catalog (skillid PK, domain, skillname, subdomain)
 - `employee_skill` — mapping of employee ↔ skill with proficiency, experience, certificate source
 
-## Images and what they show
-All images live either at the repository root `images/` or under `src/main/resources/static/images/`.
+## Screenshots and assets
 
-Root images (screenshots):
-- `images/AdminPage.png` — Admin dashboard showing user management and reports.
-- `images/EmployeeHome.png` — Employee home page / dashboard.
-- `images/EmployeeHome2.png` — Alternative view of employee dashboard.
-- `images/Skill_Analysis.png` — Skill analysis visuals (domain heatmap and proficiency charts).
-- `images/search.png` — Skill search UI and results.
-- `images/Update.png` — Update skill / edit UI.
+The repository includes both root-level screenshots (for the README) and static assets served by the application. The images below are embedded so they render directly in GitHub.
 
-Static assets (served by the app):
-- `static/images/addskill.jpg`, `add.jpg`, `add-skill-icon.jpg` — Add-skill form graphics and icons.
-- `static/images/skills.png`, `report.png`, `update-skill-icon.jpg` — Skill list icons and report visuals.
-- `static/images/professional.jpg`, `professionalimg.jpg` — Decorative/team images used in landing pages.
-- `static/images/hero-img.svg`, `hero-bg-abstract.jpg` — Hero section assets for the marketing/home page.
-- `static/images/maintenance.svg`, `construction.svg` — Placeholder/maintenance graphics.
-- `static/images/register_icon.png`, `reg.png` — Registration form icons.
-- `static/images/stats-img.svg`, `tools.svg` — Analytics icons used in reports.
-- Various other images (logos, favicons, and illustrations) used across templates.
+### Root screenshots
 
-Each image is referenced in the templates under `src/main/resources/templates` and can be replaced with branded assets.
+![Admin dashboard](images/AdminPage.png)
+
+![Employee dashboard](images/EmployeeHome.png)
+
+![Employee dashboard (alt)](images/EmployeeHome2.png)
+
+![Skill analysis (domain heatmap & proficiency)](images/Skill_Analysis.png)
+
+![Search UI and results](images/search.png)
+
+![Update / Edit skill UI](images/Update.png)
+
+---
+
+### In-app static assets (served from `src/main/resources/static/images/`)
+
+![Add skill form](src/main/resources/static/images/addskill.jpg)
+
+![Skill catalog icon](src/main/resources/static/images/skills.png)
+
+![Report visual](src/main/resources/static/images/report.png)
+
+![Update skill icon](src/main/resources/static/images/update-skill-icon.jpg)
+
+![Professional banner](src/main/resources/static/images/professional.jpg)
+
+![Hero image](src/main/resources/static/images/hero-img.svg)
+
+These assets appear in the Thymeleaf templates under `src/main/resources/templates/`. Replace any image by updating the corresponding file in `static/images` or the `images/` folder for README screenshots.
+
 
 ## How to create an admin user
 For security, no credentials are stored in README. Create an admin user via SQL or the in-app admin UI:
