@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Skill Analysis</title>
+<style>
+        .navbar {
+            background-color: #a2c1e4;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        .navbar img {
+            width: 120px;
+            height: 60px;
+        }
+ 
+        .logout-link,
+        .home-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+ 
+        .logout-link:hover,
+        .home-link:hover {
+            text-decoration: underline;
+        }
+ 
+        .logout-container {
+            margin-right: 20px;
+            
+            
+        }
+ 
+        .logout-button,
+        .home-button {
+            background-color: #08223d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .logout-button:hover,
+        .home-button:hover {
+            background-color: #376b96;
+        }
+ 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9ecef;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+ 
+        h2 {
+            color: black;
+        }
+ 
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+          
+           display: none;
+
+            
+        }
+ 
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+ 
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+ 
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+ 
+        tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+ 
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 20px;
+        }
+ 
+        button:hover {
+            background-color: #45a049;
+        }
+        .download-button {
+        background-color: #08223d;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+ 
+    .download-button:hover {
+        background-color: #376b96;
+    }
+ 
+    .charts-container {
+        display: flex;
+        justify-content: space-around;
+    }
+ 
+    canvas {
+        max-width: 400px;
+        max-height: 400px;
+        margin: 20px auto;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+<!-- Include jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/dist/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
+
+
+</head>
+ <div class="navbar">
+    <img src="https://torryharris.com/images/this25yersop2.gif" alt="Torry Harris Logo" width="100" height="50">
+    <h2>Your Skill Details</h2>
+    <div class="logout-container">
+        <a href="/user-page" class="home-button">Home</a>
+        
+         <a href="javascript:;" onclick="downloadReport()" class="download-button">Download Report</a>
+            <a href="/logout" class="logout-button">Logout</a>
+        
+    </div>
+</div>
+<body>
+<div id="report-content">
+<table>
+<thead>
+<tr>
+<th>Employee ID</th>
+<th>Skill Name</th>
+<th>Skill SubDomain</th>
+<th>Skill Domain</th>
+<th>Proficiency</th>
+<th>Experience</th>
+<th>Certification Source</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="employeeSkill : ${employeeSkills}">
+<td th:text="${employeeSkill.login_det.empid}"></td>
+<td th:text="${employeeSkill.skills.skillname}"></td>
+<td th:text="${employeeSkill.skills.subdomain}"></td>
+<td th:text="${employeeSkill.skills.domain}"></td>
+<td th:text="${employeeSkill.proficiency}"></td>
+<td th:text="${employeeSkill.exp}"></td>
+<td th:text="${employeeSkill.cert_source}"></td>
+</tr>
+</tbody>
+</table>
+ <h2 align="center"> Personalised Analysis</h2><br>
+<div class="charts-container">
+
+
+    <canvas id="skillExperienceChart"></canvas>
+    <canvas id="skillProficiencyChart"></canvas>
+</div>
+ </div>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Extract the experience values for each skill
+            var skillExperienceData = [];
+            var skillElements = document.querySelectorAll('td:nth-child(2)'); // Selecting skill name column
+            var experienceElements = document.querySelectorAll('td:nth-child(6)'); // Selecting experience column
+ 
+            skillElements.forEach(function (element, index) {
+                var skillName = element.textContent.trim();
+                var experience = parseFloat(experienceElements[index].textContent.trim());
+ 
+                skillExperienceData.push({
+                    skillName: skillName,
+                    experience: experience
+                });
+            });
+ 
+            // Sort data based on experience (optional)
+            skillExperienceData.sort(function (a, b) {
+                return b.experience - a.experience;
+            });
+ 
+            var labels = skillExperienceData.map(function (data) {
+                return data.skillName;
+            });
+ 
+            var data = skillExperienceData.map(function (data) {
+                return data.experience;
+            });
+ 
+            // Render the skill experience bar chart
+            var ctx = document.getElementById('skillExperienceChart').getContext('2d');
+            var skillExperienceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Experience',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Skills'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Experience'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.dataset.label || '';
+                                    var value = context.parsed.y;
+                                    return label + ': ' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+</script>
+ 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Extract the proficiency and skill name data
+        var skillProficiencyData = [];
+        var skillElements = document.querySelectorAll('td:nth-child(2)'); // Selecting skill name column
+        var proficiencyElements = document.querySelectorAll('td:nth-child(5)'); // Selecting proficiency column
+ 
+        skillElements.forEach(function (element, index) {
+            var skillName = element.textContent.trim();
+            var proficiency = proficiencyElements[index].textContent.trim();
+ 
+            skillProficiencyData.push({
+                skillName: skillName,
+                proficiency: proficiency
+            });
+        });
+ 
+        // Initialize proficiency counts for each proficiency level
+        var proficiencyCounts = {
+            'Expert': [],
+            'Novice': [],
+            'Professional': [],
+            'Awareness': []
+        };
+ 
+        // Count the occurrence of each skill for each proficiency level
+        skillProficiencyData.forEach(function (data) {
+            var skillName = data.skillName;
+            var proficiency = data.proficiency;
+ 
+            proficiencyCounts[proficiency].push(skillName);
+        });
+ 
+        var proficiencyLabels = Object.keys(proficiencyCounts);
+        var proficiencyData = proficiencyLabels.map(function (proficiency) {
+            return proficiencyCounts[proficiency].length;
+        });
+ 
+        // Render the donut chart
+        var ctx = document.getElementById('skillProficiencyChart').getContext('2d');
+        var skillProficiencyChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: proficiencyLabels,
+                datasets: [{
+                    data: proficiencyData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',   // Expert
+                        'rgba(54, 162, 235, 0.5)',   // Novice
+                        'rgba(255, 206, 86, 0.5)',   // Professional
+                        'rgba(75, 192, 192, 0.5)'    // Awareness
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return proficiencyCounts[context.label].join(', ');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+ 
+
+ 
+<!-- Download Report button 
+<div style="text-align: center; margin-top: 20px;">
+    <button onclick="downloadHTMLPage()" class="download-button">Download Report</button>
+</div> -->
+<!-- Download Report button -->
+<script type="text/javascript">
+     function downloadReport() {
+        // Get the report content container
+        var reportContent = document.getElementById('report-content');
+
+        // Create an instance of html2pdf
+        var pdf = new html2pdf(reportContent);
+
+        // Options for the pdf generation
+        var options = {
+            margin: 10,
+            filename: 'Skill_Analysis_Report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Add the container to the pdf
+        pdf.from(reportContent).set(options).outputPdf();
+    }
+
+</script>
+
+
+
+
+</body>
+</html>

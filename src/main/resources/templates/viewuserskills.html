@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <style>
+        .navbar {
+           background-color: #a2c1e4;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        .navbar img {
+            width: 120px;
+            height: 60px;
+        }
+ 
+        .logout-link,
+        .home-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+ 
+        .logout-link:hover,
+        .home-link:hover {
+            text-decoration: underline;
+        }
+ 
+        .logout-container {
+            margin-right: 20px;
+        }
+ 
+        .logout-button,
+        .home-button {
+            background-color: #08223d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .logout-button:hover,
+        .home-button:hover {
+            background-color: #376b96;
+        }
+ 
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e9ecef;
+        }
+ 
+        h2 {
+            color: #333;
+        }
+ 
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+ 
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+ 
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+ 
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+ 
+        .search-filter {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+ 
+        .search-filter input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+ 
+        .search-filter button,
+        #filterButton {
+            padding: 10px 20px;
+            background-color: rgb(87 121 237);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+ 
+        .search-filter button:hover,
+        #filterButton:hover {
+            background-color: blue;
+        }
+ 
+        #filterButton {
+            margin-left: 10px;
+        }
+ 
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+ 
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+ 
+        th {
+            background-color: #f2f2f2;
+        }
+ 
+        .download-button {
+            background-color: #08223d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+ 
+        .download-button:hover {
+            background-color: #45a049;
+        }
+ 
+        .download-section {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+ 
+<div class="navbar">
+    <img src="https://thisisthbs-my.sharepoint.com/:i:/r/personal/yaseswini_depuru_thbs_com/Documents/Microsoft%20Teams%20Chat%20Files/logo.gif?csf=1&web=1&e=Oe68fq" alt="Torry Harris Logo" width="100" height="50">
+    <h2>Skill Details</h2>
+    <div class="logout-container">
+        <a href="/user-page" class="logout-button">Home</a>
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</div>
+ 
+<br>
+<br>
+ 
+ 
+<!-- Search and Filter -->
+<div class="search-filter">
+    <input type="text" id="searchInput" placeholder="Search for skill...">
+    <button onclick="filterTable()"><i class="fas fa-search"></i> Search</button>
+    <button onclick="openModal()" id="filterButton"><i class="fas fa-filter"></i> Filter</button>
+</div>
+ 
+<!-- Filter Modal -->
+<div id="filterModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <label for="domainSelect">Select Domain:</label>
+        <select id="domainSelect" onchange="populateSubdomains()">
+            <option value="">All</option>
+            <!-- Domain options will be populated dynamically -->
+        </select>
+        <label for="subdomainSelect">Select Subdomain:</label>
+        <select id="subdomainSelect">
+            <option value="">All</option>
+            <!-- Subdomain options will be populated dynamically -->
+        </select>
+        <button onclick="applyFilter()">OK</button>
+    </div>
+</div>
+ 
+<!-- Table -->
+<table border="1" id="skillTable">
+    <thead>
+        <tr>
+            <th>Skill ID</th>
+            <th>Skill Name</th>
+            <th>Domain</th>
+            <th>Subdomain</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="skill : ${skills}">
+            <td th:text="${skill.skillid}"></td>
+            <td th:text="${skill.skillname}"></td>
+            <td th:text="${skill.domain}"></td>
+            <td th:text="${skill.subdomain}"></td>
+        </tr>
+    </tbody>
+</table>
+ 
+ 
+ 
+<script>
+    // Populate domain options for the filter modal
+    function populateDomains() {
+        var domains = [];
+        var table = document.getElementById("skillTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+            var domain = rows[i].getElementsByTagName("td")[2].innerText;
+            if (!domains.includes(domain)) {
+                domains.push(domain);
+            }
+        }
+        var domainSelect = document.getElementById("domainSelect");
+        domainSelect.innerHTML = '<option value="">All</option>';
+        domains.forEach(function (domain) {
+            domainSelect.innerHTML += '<option value="' + domain + '">' + domain + '</option>';
+        });
+    }
+ 
+    // Populate subdomain options based on selected domain
+    function populateSubdomains() {
+        var selectedDomain = document.getElementById("domainSelect").value;
+        var subdomains = [];
+        var table = document.getElementById("skillTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+            var domain = rows[i].getElementsByTagName("td")[2].innerText;
+            var subdomain = rows[i].getElementsByTagName("td")[3].innerText;
+            if (domain === selectedDomain && !subdomains.includes(subdomain)) {
+                subdomains.push(subdomain);
+            }
+        }
+        var subdomainSelect = document.getElementById("subdomainSelect");
+        subdomainSelect.innerHTML = '<option value="">All</option>';
+        subdomains.forEach(function (subdomain) {
+            subdomainSelect.innerHTML += '<option value="' + subdomain + '">' + subdomain + '</option>';
+        });
+    }
+ 
+    // Apply filter based on selected domain and subdomain
+    function applyFilter() {
+        var selectedDomain = document.getElementById("domainSelect").value;
+        var selectedSubdomain = document.getElementById("subdomainSelect").value;
+        var table = document.getElementById("skillTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+            var domain = rows[i].getElementsByTagName("td")[2].innerText;
+            var subdomain = rows[i].getElementsByTagName("td")[3].innerText;
+            if ((selectedDomain !== "" && domain !== selectedDomain) ||
+                (selectedSubdomain !== "" && subdomain !== selectedSubdomain)) {
+                rows[i].style.display = "none";
+            } else {
+                rows[i].style.display = "";
+            }
+        }
+        closeModal();
+    }
+ 
+    // Open filter modal
+    function openModal() {
+        populateDomains();
+        document.getElementById("filterModal").style.display = "block";
+    }
+ 
+    // Close filter modal
+    function closeModal() {
+        document.getElementById("filterModal").style.display = "none";
+    }
+ 
+    // Search function
+    function filterTable() {
+        var input = document.getElementById("searchInput").value.toUpperCase();
+        var table = document.getElementById("skillTable");
+        var rows = table.getElementsByTagName("tr");
+        for (var i = 1; i < rows.length; i++) { // Start from 1 to skip header row
+            var skillid = rows[i].getElementsByTagName("td")[0].innerText.toUpperCase();
+            var skillname = rows[i].getElementsByTagName("td")[1].innerText.toUpperCase();
+            var domain = rows[i].getElementsByTagName("td")[2].innerText.toUpperCase();
+            var subdomain = rows[i].getElementsByTagName("td")[3].innerText.toUpperCase();
+            if (skillid.indexOf(input) > -1 || skillname.indexOf(input) > -1 || domain.indexOf(input) > -1 || subdomain.indexOf(input) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+</script>
+ 
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+ 
+<script>
+    function downloadHTMLPage() {
+        // Select the table element
+        const table = document.querySelector('table');
+ 
+        // Define the options for html2pdf
+        const options = {
+            filename: 'report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+        };
+ 
+        // Convert the table to PDF
+        html2pdf().from(table).set(options).save();
+    }
+</script>
+ 
+<!-- Download Report button -->
+<div style="text-align: center; margin-top: 20px;">
+    <button onclick="downloadHTMLPage()" class="download-button">Download Report</button>
+</div>
+</body>
+</html>

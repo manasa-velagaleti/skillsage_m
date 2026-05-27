@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Dashboard</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link th:href="@{/assets/img/favicon.png}" rel="icon">
+    <link th:href="@{/assets/img/apple-touch-icon.png}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+    <link th:href="@{/static/aos.css}" rel="stylesheet">
+    <link th:href="@{vendor/glightbox/css/glightbox.min.css}" rel="stylesheet">
+    <link th:href="@{vendor/swiper/swiper-bundle.min.css}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+    <style>
+    
+  /* #profileModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 50%; /* Center the modal horizontally *
+    top: 50%; /* Center the modal vertically *
+    transform: translate(-50%, -50%); /* Center the modal both horizontally and vertically *
+    width: 80%;
+    max-width: 600px; /* Adjust the maximum width as needed *
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+} */
+
+
+
+      #profileModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+ .modal-content {
+    background-color: #fefefe;
+   
+    margin: -1% auto; /* Adjust margin for centering */
+    padding: 20px;
+    border: 1px solid #888;
+    height: 76%;
+    width: 80%; /* Adjust the width as needed */
+    max-width: 600px; /* Add max-width for responsiveness */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ 
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+ 
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+ 
+        /* Adjusted styles for user profile card */
+        .user-card-full {
+            overflow: hidden;
+            margin-top: 20px;
+            display: flex; /* Use flexbox for layout */
+            height: 105%;
+        }
+ 
+.user-profile {
+    background: -webkit-gradient(linear, left, right, from(#f29263), to(#ee5a6f));
+    background: linear-gradient(to right, #ee5a6f, #f29263);
+    color: white;
+    border-radius: 8px;
+    padding: 5px 10px; /* Decreased padding */
+    text-align: center;
+    width: 105%;
+    height:88%;
+    float: left;
+    font-size: 14px; /* Decreased font size */
+    line-height: 1.2; /* Adjusted line height */
+}
+ 
+.edit-button {
+    border: none; /* Remove border */
+    background: none; /* Remove background */
+    color: inherit; /* Inherits the text color */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+}
+ 
+.edit-button:hover {
+    color: #ccc; /* Change color on hover */
+}
+ 
+ 
+ 
+        .user-profile img {
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+ 
+.user-profile h6 {
+    margin: 0;
+    font-size: 18px;
+}
+ 
+.user-profile p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+ 
+.user-profile i {
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+ 
+.user-profile i:hover {
+    color: #3498db;
+}
+ 
+.status {
+    width: 103%; /* Adjusted width */
+    padding: 20px;
+    float: left; /* Align to the right of the user profile */
+    box-sizing: border-box; /* Include padding and border in the width calculation */
+}
+ 
+.status h6 {
+    margin: 0;
+    font-size: 18px;
+}
+ 
+.status p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+ 
+.status ul {
+    padding: 0;
+    list-style-type: none;
+}
+ 
+.status ul li {
+    display: inline-block;
+    margin-right: 10px;
+}
+ 
+.status ul li a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+ 
+.status ul li a:hover {
+    color: #2980b9;
+}
+ 
+.headerimg {
+        width: 100vw; /* Set width to 100% of the viewport width */
+        height: 40vh; /* Set height to 20% of the viewport height */
+        object-fit: cover; /* Maintain aspect ratio and cover the entire container */
+       
+    }
+   .edit-button{
+   margin-left:100px;
+   color:black;
+   top:190px;
+    
+   
+    right: 296px;
+   position: absolute;
+ /*    bottom: 5px;
+    right: 5px; */
+    cursor: pointer;
+   }
+  
+   </style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <section id="topbar" class="topbar d-flex align-items-center" th:fragment="topBar">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="contact-info d-flex align-items-center">
+            <i class="bi bi-envelope d-flex align-items-center">  skillssage@gmail.com</i>
+            <!-- Uncomment the line below and modify the phone number as needed -->
+            <!-- <i class="bi bi-phone d-flex align-items-center ms-4"><span>+1 5589 55488 55</span></i> -->
+        </div>
+        <div class="social-links d-none d-md-flex align-items-center">
+            <a href="https://twitter.com/torryharris" class="twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://m.facebook.com/TorryHarrisIntegrationSolutions" class="facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/torryharrisintegrationsolution?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/torry-harris-integration-solutions/" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        </div>
+    </div>
+</section><!-- End Top Bar -->
+
+
+  <header id="header" class="header d-flex align-items-center" th:fragment="header">
+
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+        <a th:href="@{/home}" class="logo d-flex align-items-center">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <!-- <img th:src="@{/assets/img/logo.png}" alt=""> -->
+            <h1>SkillSage<span>.</span> </h1>
+        </a>
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a href="#topbar">Home</a></li>
+
+                <li><a href="#services">Services</a></li>
+                <li class="dropdown">
+                    <span>Reminders</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
+                    <ul>
+                        <li><a th:href="@{/admin/sendmsg}">Send a Message!</a></li>
+                        <li><a th:href="@{/user/receivemsg}">Received Messages!</a></li>
+                    </ul>
+                </li>
+
+    
+                <li><a href="#footer">Contact</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+                
+                 <li onclick="toggleModal()"> <div class="profile-icon"  title="Profile"><i class="bi bi-person-square"></i></li></div>
+            </ul>
+        </nav><!-- .navbar -->
+
+        <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+        <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+    </div>
+</header><!-- End Header -->
+
+  <!-- End Header -->
+  
+  <!-- Profile****** -->
+     <div id="profileModal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleModal()">&times;</span>
+            <div class="card user-card-full">
+                <div class="user-profile">
+                      
+                    <div class="m-b-25">
+                        <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
+                    </div>
+                    <h6 class="f-w-600">[[${user.getFullname()}]]</h6>
+                    <p>[[${user.getDesignation()}]]</p>
+                     
+             
+                    <i class="mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+                 
+                </div>
+                <div class="status">
+                 
+                <h4>Information</h4>
+                     
+           <button class="edit-button" onclick="openEditPage()">
+                              <i class="bi bi-pencil-fill"></i>
+                         </button>
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="m-b-10 f-w-600">Email</h6>
+                            <hp class="text-muted f-w-400">[[${user.getEmail()}]]</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h6 class="m-b-10 f-w-600">Employee ID</h6>
+                            <p class="text-muted f-w-400">[[${user.getEmpid()}]]</p>
+                        </div>
+                    </div>
+                    <br>
+                    <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Status :</h6>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="m-b-10 f-w-600">[[${user.getProject()}]]</p>
+                            <h6 class="text-muted f-w-400">[[${user.getPro_desc()}]]</h6>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="m-b-10 f-w-600">Project Starts On: [[${user.getDateFrom()}]]</p>
+                            <p class="text-muted f-w-400">Project Ends On: [[${user.getDateTo()}]]</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <script>
+        function toggleModal() {
+           var modal = document.getElementById("profileModal");
+          
+            
+             
+    var body = document.body;
+
+    if (modal.style.display === "block") {
+        modal.style.display = "none";
+        body.style.overflow = "auto"; // Re-enable scrolling on the body
+    } else {
+        modal.style.display = "block";
+        body.style.overflow = "hidden"; // Disable scrolling on the body
+    }
+        }
+        
+        
+        function openEditPage() {
+       
+        window.location.href = '/edit-admin-details';
+    }
+    </script>
+  
+  
+  
+  <!-- En Profile -->
+
+  <!-- ======= Hero Section ======= -->
+<section id="hero" class="hero">
+    <div class="container position-relative">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <h2>Welcome<br><span>[[${user.getFullname()}]]</span></h2>
+          <p>UpSkill Update ∞</p>
+          <div class="d-flex justify-content-center justify-content-lg-start">
+            <a th:href="@{/searchSkills}" class="btn-get-started">Get Started - view skills</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2">
+          <img src="/images/hero-img.svg" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100">
+        </div>
+      </div>
+    </div>
+
+    <!-- Icon Boxes Section -->
+    <div class="icon-boxes position-relative">
+      <div class="container position-relative">
+        <div class="row gy-4 mt-5">
+
+          <!-- Add Skill Icon Box -->
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-people-fill"></i></div>
+              <h4 class="title"><a th:href="@{/employeeess}" class="stretched-link" >Employees</a></h4>
+            </div>
+          </div><!--End Icon Box -->
+
+          <!-- View Skills Icon Box -->
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-journal-check"></i></div>
+              <h4 class="title"><a th:href="@{/Skilldashboard}" class="stretched-link">Skills</a></h4>
+            </div>
+          </div><!--End Icon Box -->
+
+          <!-- Update Skill Icon Box -->
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-person-lines-fill"></i></div>
+              <h4 class="title"><a href="/skillDetails" class="stretched-link">Employee Skills</a></h4>
+            </div>
+          </div><!--End Icon Box -->
+
+          <!-- Delete Skill Icon Box -->
+         <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-search"></i></div>
+              <h4 class="title"><a href="/searchEmployeeSkills" class="stretched-link"> Search Employee Skills</a></h4>
+            </div>
+          </div><!--End Icon Box -->
+          <!--End Icon Box -->
+
+        </div>
+      </div>
+    </div><!-- End Icon Boxes Section -->
+
+  </section><!-- End Hero Section -->
+  <!-- End Hero Section -->
+
+  <main id="main">
+
+
+    <!-- ======= Stats Counter Section ======= -->
+    <section id="stats-counter" class="stats-counter">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row gy-4 align-items-center">
+
+        <!-- Image Column -->
+        <div class="col-lg-6">
+          <img src="images/stats-img.svg" alt="" class="img-fluid">
+        </div>
+
+        <!-- Stats Column -->
+        <div class="col-lg-6">
+
+          <!-- Skills Stats Item -->
+          <div class="stats-item d-flex align-items-center">
+            <span data-purecounter-start="0" data-purecounter-end="129" data-purecounter-duration="1" class="purecounter"></span>
+            <p><strong>Skills</strong></p>
+          </div><!-- End Skills Stats Item -->
+
+          <!-- Domains Stats Item -->
+          <div class="stats-item d-flex align-items-center">
+            <span th:data-purecounter-start="0" th:data-purecounter-end="9" th:data-purecounter-duration="1" class="purecounter"></span>
+            <p><strong>Domains</strong></p>
+          </div><!-- End Domains Stats Item -->
+
+          <!-- Sub-Domains Stats Item -->
+          <div class="stats-item d-flex align-items-center">
+            <span th:data-purecounter-start="0" th:data-purecounter-end="29" th:data-purecounter-duration="1" class="purecounter"></span>
+            <p><strong>Sub-Domains</strong></p>
+          </div><!-- End Sub-Domains Stats Item -->
+
+        </div>
+
+      </div>
+
+    </div>
+  </section><!-- End Stats Counter Section -->
+  
+    <!-- ======= Call To Action Section ======= -->
+    <section id="call-to-action" class="call-to-action">
+    <div class="container text-center" data-aos="zoom-out">
+ <h3>Visual & Analytical Representation</h3>
+      <p>All Analytics Info here!.</p>
+      
+    
+       <a  class="cta-btn"  th:href="@{/a_analysis}">Analytics</a>
+    </div>
+  </section><!-- End Call To Action Section -->
+
+  <!-- Our Services Section -->
+  <section id="services" class="services sections-bg">
+    <div class="container" data-aos="fade-up">
+
+      <div class="section-header">
+        <h2>Our Features</h2>
+        <p>The main </p>
+      </div>
+
+      <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+
+       <div class="col-lg-4 col-md-6">
+            <div class="service-item  position-relative">
+              <div class="icon">
+                <i class="bi bi-plus-square"></i>
+              </div>
+              <h3>Add Skills</h3>
+              <p>Learned a New Skill, then add it to your Existing Skills!.</p>
+              <a class="readmore stretched-link"></a>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-file-text"></i>
+              </div>
+              <h3>View Skills</h3>
+              <p>Get a Detailed data of your skills!.</p>
+              <a class="readmore stretched-link"></a>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+              <h3>Update Skills</h3>
+              <p>Do You need to modify your skills? No Problem, this Feature helps you Out!.</p>
+              <a  class="readmore stretched-link"></a>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-trash"></i>
+              </div>
+              <h3>Delete Skills</h3>
+              <p>Delete your Skills here!</p>
+              <a class="readmore stretched-link"></a>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-calendar4-week"></i>
+              </div>
+              <h3>Report Analysis</h3>
+              <p>Get a Visualized Report of your Skills Here!</p>
+              <a  class="readmore stretched-link"></a>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-chat-square-text"></i>
+              </div>
+              <h3>Internal Chatting</h3>
+              <p>Need to send a message to Colleague? Here you Go!</p>
+              <a  class="readmore stretched-link"></a>
+            </div>
+          </div><!-- End Service Item -->
+
+        </div>
+
+      </div>
+  </section><!-- End Our Services Section -->
+
+
+    <!-- ======= Contact Section ======= 
+    <section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+
+      <div class="section-header">
+        <h2>Contact</h2>
+        <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem dolore earum</p>
+      </div>
+
+      <div class="row gx-lg-0 gy-4">
+
+        <div class="col-lg-4">
+
+          <div class="info-container d-flex flex-column align-items-center justify-content-center">
+            <div class="info-item d-flex">
+              <i class="bi bi-geo-alt flex-shrink-0"></i>
+              <div>
+                <h4>Location:</h4>
+                <p>A108 Adam Street, New York, NY 535022</p>
+              </div>
+            </div><!-- End Info Item -
+
+            <div class="info-item d-flex">
+              <i class="bi bi-envelope flex-shrink-0"></i>
+              <div>
+                <h4>Email:</h4>
+                <p>info@example.com</p>
+              </div>
+            </div><!-- End Info Item --
+
+            <div class="info-item d-flex">
+              <i class="bi bi-phone flex-shrink-0"></i>
+              <div>
+                <h4>Call:</h4>
+                <p>+1 5589 55488 55</p>
+              </div>
+            </div><!-- End Info Item --
+
+            <div class="info-item d-flex">
+              <i class="bi bi-clock flex-shrink-0"></i>
+              <div>
+                <h4>Open Hours:</h4>
+                <p>Mon-Sat: 11AM - 23PM</p>
+              </div>
+            </div><!-- End Info Item --
+          </div>
+
+        </div>
+
+        <div class="col-lg-8">
+          <form  method="post" role="form" class="php-email-form">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+              </div>
+              <div class="col-md-6 form-group mt-3 mt-md-0">
+                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+              </div>
+            </div>
+            <div class="form-group mt-3">
+              <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+            </div>
+            <div class="form-group mt-3">
+              <textarea class="form-control" name="message" rows="7" placeholder="Message" required></textarea>
+            </div>
+            <div class="my-3">
+              <div class="loading">Loading</div>
+              <div class="error-message"></div>
+              <div class="sent-message">Your message has been sent. Thank you!</div>
+            </div>
+            <div class="text-center"><button type="submit" th:text="{send.message}">Send Message</button></div>
+          </form>
+        </div><!-- End Contact Form --
+
+      </div>
+
+    </div>
+  </section><!-- End Contact Section -->
+  </main><!-- End #main -->
+  
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span>SkillSage</span>
+          </a>
+          <p>UpSkill! Update ∞</p>
+          <div class="social-links d-flex mt-4">
+            <a href="https://twitter.com/torryharris" class="twitter"><i class="bi bi-twitter"></i></a>
+            <a href="https://m.facebook.com/TorryHarrisIntegrationSolutions" class="facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/torryharrisintegrationsolution?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.linkedin.com/company/torry-harris-integration-solutions/" class="linkedin"><i class="bi bi-linkedin"></i></a>
+            <a href="https://youtube.com/@toryharis?si=2kN2Fxd2ejy1YUWU" class="youtube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a  th:href="@{/home}">Home</a></li>
+            <li><a  th:href="@{/home}">About us</a></li>
+            <li><a  href="#services">Services</a></li>
+           
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li>Skill Operations</li>
+            <li>Customized Filtering</li>
+            <li>Personalized Reports</li>
+            <li>Visual Analysis</li>
+            <li>Internal Chat System</li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Contact Us</h4>
+          <p>
+             Sona Towers, <br>
+           
+            Banglore <br><br>
+            <strong>Phone:</strong>+91 - 80 - 41827200<br>
+            <strong>Email:</strong>skillssage@gmail.com<br>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>SkillSage</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/impact-bootstrap-business-website-template/ -->
+       
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+
+  <!-- <a class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a> -->
+<a href="#topbar" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="src/main/resources/static/vendor/aos/aos.js"></script>
+  <script src="vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="vendor/swiper/swiper-bundle.min.js"></script>
+  
+ 
+  <!-- Template Main JS File -->
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>

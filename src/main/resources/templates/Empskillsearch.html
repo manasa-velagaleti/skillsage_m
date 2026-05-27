@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Employee Skill Details</title>
+      <style>
+              .navbar {
+            background-color: #a2c1e4;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        .navbar img {
+            width: 120px;
+            height: 60px;
+        }
+ 
+        .logout-link,
+        .home-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+ 
+        .logout-link:hover,
+        .home-link:hover {
+            text-decoration: underline;
+        }
+ 
+        .logout-container {
+            margin-right: 20px;
+        }
+ 
+        .logout-button,
+        .home-button {
+            background-color: #08223d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .logout-button:hover,
+        .home-button:hover {
+            background-color: #376b96;
+        }
+ 
+       
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+ 
+        h2 {
+            color: #333;
+        }
+ 
+        form {
+            margin: 20px 0;
+        }
+ 
+        label {
+            display: inline-block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+ 
+        input, select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+ 
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+ 
+        button:hover {
+            background-color: #2980b9;
+        }
+ 
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+        }
+ 
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+ 
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+ 
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+ 
+        tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+ 
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .modal .close{
+        text-align: center;
+        margin-left:565px;
+         cursor: pointer;
+         font-weight: bold;
+        font-size: 20px; /* Adjust the size as needed */
+        }
+        
+        .download-button {
+            background-color: #08223d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+ 
+        .download-button:hover {
+            background-color: #45a049;
+        }
+ 
+        .download-section {
+            text-align: center;
+        }
+    </style>
+    <script>
+        // JavaScript function remains the same
+         function distinct(array) {
+            return array.filter(function (value, index, self) {
+                return self.indexOf(value) === index;
+            });
+        }
+     function filterTable() {
+    var empid = document.getElementById("empidInput").value.toUpperCase();
+    var skillid = document.getElementById("skillidInput").value.toUpperCase();
+    var proficiency = document.getElementById("proficiencyInput").value.toUpperCase();
+    var exp = document.getElementById("expInput").value.toUpperCase();
+    var certSource = document.getElementById("certSourceInput").value.toUpperCase();
+    var fullName = document.getElementById("fullNameInput").value.toUpperCase();
+    var skillName = document.getElementById("skillNameInput").value.toUpperCase();
+    var domain = document.getElementById("domainInput").value.toUpperCase();
+    var subdomain = document.getElementById("subdomainInput").value.toUpperCase();
+ 
+    var table = document.getElementById("employeeSkillTable");
+    var rows = table.getElementsByTagName("tr");
+ 
+    // Loop through all table rows, except the first one (header row)
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var cells = row.getElementsByTagName("td");
+        var display = true; // Flag to determine if the row should be displayed
+ 
+        // Check each cell against the filter criteria
+        if (
+            (empid && cells[0].innerText.toUpperCase().indexOf(empid) === -1) ||
+            (skillid && cells[1].innerText.toUpperCase().indexOf(skillid) === -1) ||
+            (proficiency && cells[2].innerText.toUpperCase().indexOf(proficiency) === -1) ||
+            (exp && cells[3].innerText.toUpperCase().indexOf(exp) === -1) ||
+            (certSource && cells[4].innerText.toUpperCase().indexOf(certSource) === -1) ||
+            (fullName && cells[5].innerText.toUpperCase().indexOf(fullName) === -1) ||
+            (skillName && cells[6].innerText.toUpperCase().indexOf(skillName) === -1) ||
+            (domain && cells[7].innerText.toUpperCase().indexOf(domain) === -1) ||
+            (subdomain && cells[8].innerText.toUpperCase().indexOf(subdomain) === -1)
+        ) {
+            display = false; // If any criteria doesn't match, set display flag to false
+        }
+ 
+        // Show or hide the row based on the display flag
+        row.style.display = display ? "" : "none";
+    }
+}
+ 
+         // JavaScript functions remain unchanged
+    function openModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+    }
+ 
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+ 
+    function applyFilters() {
+        // Apply filters and trigger search
+        filterTable();
+        closeModal();
+    }
+         function filterTable1() {
+        var input = document.getElementById("searchInput").value.toUpperCase();
+        var table = document.getElementById("employeeSkillTable");
+        var rows = table.getElementsByTagName("tr");
+ 
+        for (var i = 1; i < rows.length; i++) {
+            var row = rows[i];
+            var cells = row.getElementsByTagName("td");
+            var display = false;
+ 
+            for (var j = 0; j < cells.length; j++) {
+                var cell = cells[j];
+                if (cell.innerText.toUpperCase().indexOf(input) > -1) {
+                    display = true;
+                    break;
+                }
+            }
+ 
+            row.style.display = display ? "" : "none";
+        }
+    }
+    </script>
+    <!-- Add your existing style and other head content here -->
+</head>
+<body>
+ 
+<div class="navbar">
+    <img src="https://thisisthbs-my.sharepoint.com/:i:/r/personal/yaseswini_depuru_thbs_com/Documents/Microsoft%20Teams%20Chat%20Files/logo.gif?csf=1&web=1&e=Oe68fq" alt="Torry Harris Logo" width="100" height="50">
+    <h2>🔎 Search Employee Skill</h2>
+    <div class="logout-container">
+        <a href="/admin-page" class="logout-button">Admin Page</a>
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</div>
+ 
+<br>
+ 
+<input type="text" id="searchInput" onkeyup="filterTable1()" placeholder="Search...">
+ 
+<button id="filterBtn" onclick="openModal()">
+   Filter <i class="fas fa-filter"></i>
+</button>
+ 
+ 
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span onclick="closeModal()" class="close">&times;</span>
+        <h3>Filter Options</h3>
+        
+        
+       <form id="filterForm">
+    <!-- Dropdown for Employee ID -->
+    <label>Search by Employee ID:</label>
+<select name="empid" id="empidInput">
+    <option value="">Select Employee ID</option>
+    <th:block th:each="empid : ${#sets.toSet(employeeSkills.![id.empid])}">
+        <option th:text="${empid}"></option>
+    </th:block>
+</select>
+<br>
+   <label>Search by Skill ID:</label>
+<select name="skillid" id="skillidInput">
+    <option value="">Select Skill ID</option>
+    <th:block th:each="skillid : ${#sets.toSet(employeeSkills.![id.skillid])}">
+        <option th:text="${skillid}"></option>
+    </th:block>
+</select>
+<br>
+    <!-- Dropdown for Proficiency -->
+   <label>Search by Proficiency:</label>
+<select name="proficiency" id="proficiencyInput">
+    <option value="">Select Proficiency</option>
+    <th:block th:each="proficiency : ${#sets.toSet(employeeSkills.![proficiency])}">
+        <option th:text="${proficiency}"></option>
+    </th:block>
+</select>
+<br>
+    <!-- Dropdown for Experience -->
+   <label>Search by Experience:</label>
+<select name="exp" id="expInput">
+    <option value="">Select Experience</option>
+    <th:block th:each="exp : ${#sets.toSet(employeeSkills.![exp])}">
+        <option th:text="${exp}"></option>
+    </th:block>
+</select>
+ 
+<br>
+    <!-- Dropdown for Certification Source -->
+   <label>Search by Certification Source:</label>
+<select name="certSource" id="certSourceInput">
+    <option value="">Select Certification Source</option>
+    <th:block th:each="certSource : ${#sets.toSet(employeeSkills.![cert_source])}">
+        <option th:text="${certSource}"></option>
+    </th:block>
+</select>
+ 
+<br>
+    <label>Search by Employee Full Name:</label>
+<select name="fullName" id="fullNameInput">
+    <option value="">Select Employee Full Name</option>
+    <th:block th:each="fullName : ${#sets.toSet(employeeSkills.![login_det.fullname])}">
+        <option th:text="${fullName}"></option>
+    </th:block>
+</select>
+<br>
+<!-- Dropdown for Skill Name -->
+<label>Search by Skill Name:</label>
+<select name="skillName" id="skillNameInput">
+    <option value="">Select Skill Name</option>
+    <th:block th:each="skillName : ${#sets.toSet(employeeSkills.![skills.skillname])}">
+        <option th:text="${skillName}"></option>
+    </th:block>
+</select>
+<br>
+<!-- Dropdown for Domain -->
+<label>Search by Domain:</label>
+<select name="domain" id="domainInput">
+    <option value="">Select Domain</option>
+    <th:block th:each="domain : ${#sets.toSet(employeeSkills.![skills.domain])}">
+        <option th:text="${domain}"></option>
+    </th:block>
+</select>
+<br>
+ 
+<!-- Dropdown for Subdomain -->
+<label>Search by Subdomain:</label>
+<select name="subdomain" id="subdomainInput">
+    <option value="">Select Subdomain</option>
+    <th:block th:each="subdomain : ${#sets.toSet(employeeSkills.![skills.subdomain])}">
+        <option th:text="${subdomain}"></option>
+    </th:block>
+</select>
+<br>
+           <button type="button" onclick="applyFilters()">Apply Filters</button>
+            <button type="button" onclick="closeModal()">Cancel</button>
+</form>
+    
+    </div>
+</div>
+ 
+ 
+ 
+<table border="1" id="employeeSkillTable">
+    <thead>
+    <tr>
+        <th>Employee ID</th>
+        <th>Skill ID</th>
+        <th>Proficiency</th>
+        <th>Experience</th>
+        <th>Certification Source</th>
+        <th>Employee Full Name</th>
+        <th>Skill Name</th>
+        <th>Domain</th>
+        <th>Subdomain</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="employeeSkill : ${employeeSkills}">
+        <td th:text="${employeeSkill.id.empid}"></td>
+        <td th:text="${employeeSkill.id.skillid}"></td>
+        <td th:text="${employeeSkill.proficiency}"></td>
+        <td th:text="${employeeSkill.exp}"></td>
+        <td th:text="${employeeSkill.cert_source}"></td>
+        <td th:text="${employeeSkill.login_det.fullname}"></td>
+        <td th:text="${employeeSkill.skills.skillname}"></td>
+        <td th:text="${employeeSkill.skills.domain}"></td>
+        <td th:text="${employeeSkill.skills.subdomain}"></td>
+    </tr>
+    </tbody>
+</table>
+ 
+ 
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+ 
+<script>
+    function downloadHTMLPage() {
+        // Select the table element
+        const table = document.querySelector('table');
+ 
+        // Define the options for html2pdf
+        const options = {
+            filename: 'report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+        };
+ 
+        // Convert the table to PDF
+        html2pdf().from(table).set(options).save();
+    }
+</script>
+ 
+<!-- Download Report button -->
+<div style="text-align: center; margin-top: 20px;">
+    <button onclick="downloadHTMLPage()" class="download-button">Download Report</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+ 
+<head>
+<meta charset="ISO-8859-1">
+<title>Skill Details</title>
+<style>
+ 
+.download-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+ 
+        .download-button:hover {
+            background-color: #3498db;
+        }
+ 
+        .download-section {
+            text-align: center;
+        }
+ 
+       .navbar {
+            background-color: #a2c1e4;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        .navbar img {
+            width: 120px;
+            height: 60px;
+        }
+ 
+        .logout-link,
+        .home-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+ 
+        .logout-link:hover,
+        .home-link:hover {
+            text-decoration: underline;
+        }
+ 
+        .logout-container {
+            margin-right: 20px;
+        }
+ 
+        .logout-button,
+        .home-button {
+            background-color: #08223d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .logout-button:hover,
+        .home-button:hover {
+            background-color: #376b96;
+        }
+     
+ 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            color: #3498db;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto; /* Center the canvas horizontally */
+            max-width: 300px;
+            max-height: 300px;
+        }
+</style>
+</head>
+<body>
+ 
+<div class="navbar">
+    <img src="https://thisisthbs-my.sharepoint.com/:i:/r/personal/yaseswini_depuru_thbs_com/Documents/Microsoft%20Teams%20Chat%20Files/logo.gif?csf=1&web=1&e=Oe68fq" alt="Torry Harris Logo" width="100" height="50">
+    <h2>Employee Skill Details</h2>
+    <div class="logout-container">
+        <a href="/EmpSkillDash" class="home-button">Back</a>
+        <a href="/admin-page" class="home-button">Home</a>
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</div>
+ 
+<table>
+<thead>
+<tr>
+<th>Employee ID</th>
+<th>Employee Name</th>
+<th>Skill Name</th>
+<th>Proficiency</th>
+<th>Experience</th>
+<th>Certification Source</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="employeeSkill : ${employeeSkills}">
+<td th:text="${employeeSkill.login_det.empid}"></td>
+<td th:text="${employeeSkill.login_det.fullname}"></td>
+<td th:text="${employeeSkill.skills.skillname}"></td>
+<td th:text="${employeeSkill.proficiency}"></td>
+<td th:text="${employeeSkill.exp}"></td>
+<td th:text="${employeeSkill.cert_source}"></td>
+</tr>
+</tbody>
+</table>
+ 
+<!-- Canvas Elements for Charts -->
+    <div style="display: flex; justify-content: space-around;">
+        <canvas id="skillPieChart" style="max-width: 300px; max-height: 300px;"></canvas>
+        <canvas id="skillBarChart" style="max-width: 300px; max-height: 300px;"></canvas>
+        <canvas id="employeeSkillLevelChart" style="max-width: 300px; max-height: 300px;"></canvas>
+    </div>
+ 
+ 
+    <!-- "Download Report" Button -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="downloadHTMLPage()" class="download-button">Download Report</button>
+    </div>
+    
+    
+<!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+ 
+ 
+<script>
+     document.addEventListener('DOMContentLoaded', function (){
+        var skillCounts = {};
+        var skillElements = document.querySelectorAll('td:nth-child(3)'); // Selecting skill name column
+        var fullNameElements = document.querySelectorAll('td:nth-child(2)'); // Selecting employee name column
+ 
+        // Count the occurrence of each skill and store corresponding full names
+        skillElements.forEach(function(element, index) {
+            var skillName = element.textContent.trim();
+            var fullName = fullNameElements[index].textContent.trim();
+ 
+            if (!skillCounts[skillName]) {
+                skillCounts[skillName] = {
+                    count: 0,
+                    fullNames: []
+                };
+            }
+ 
+            skillCounts[skillName].count++;
+            if (!skillCounts[skillName].fullNames.includes(fullName)) {
+                skillCounts[skillName].fullNames.push(fullName);
+            }
+        });
+ 
+        var labels = Object.keys(skillCounts);
+        var data = Object.values(skillCounts).map(function(item) {
+            return item.count;
+        });
+ 
+        // Render the pie chart
+        var ctx = document.getElementById('skillPieChart').getContext('2d');
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var skillName = context.label;
+                                var count = context.parsed;
+                                var fullNames = skillCounts[skillName].fullNames.join(', ');
+ 
+                                return '\nCount:' + count + '\nBy: ' + fullNames;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+ 
+ 
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ... (your existing pie chart script) ...
+ 
+            // Create a new canvas element for the bar chart
+            var barChartCanvas = document.getElementById('skillBarChart');
+            var barChartCtx = barChartCanvas.getContext('2d');
+ 
+            // Initialize variables to store data for tooltips
+            var employeeNamesForTooltips = {};
+            var skillData = {};
+            var skillElements = document.querySelectorAll('td:nth-child(3)'); // Selecting skill name column
+            var experienceElements = document.querySelectorAll('td:nth-child(5)'); // Selecting experience column
+            var fullNameElements = document.querySelectorAll('td:nth-child(2)'); // Selecting employee name column
+ 
+            skillElements.forEach(function (element, index) {
+                var skillName = element.textContent.trim();
+                var experience = parseInt(experienceElements[index].textContent.trim());
+                var fullName = fullNameElements[index].textContent.trim();
+ 
+                if (!skillData[skillName]) {
+                    skillData[skillName] = [];
+                    employeeNamesForTooltips[skillName] = [];
+                }
+ 
+                skillData[skillName].push(experience);
+                employeeNamesForTooltips[skillName].push(fullName);
+            });
+ 
+            // Find the maximum experience and corresponding fullname for each skill
+            var skillMaxExperience = {};
+            var skillMaxExperienceFullname = {};
+            Object.keys(skillData).forEach(function (skillName) {
+                var maxExperience = Math.max(...skillData[skillName]);
+                var maxExperienceIndex = skillData[skillName].indexOf(maxExperience);
+                var fullname = employeeNamesForTooltips[skillName][maxExperienceIndex];
+ 
+                skillMaxExperience[skillName] = maxExperience;
+                skillMaxExperienceFullname[skillName] = fullname;
+            });
+ 
+            var labels = Object.keys(skillMaxExperience);
+            var data = Object.values(skillMaxExperience);
+ 
+            // Render the bar chart with maximum experience and tooltips
+            var ctx = document.getElementById('skillBarChart').getContext('2d');
+            var myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Maximum Experience',
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Maximum Experience'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Skill'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function (context) {
+                                    return context[0].label; // Skill Name
+                                },
+                                label: function (context) {
+                                    var fullname = skillMaxExperienceFullname[context.label];
+                                    return 'Maximum Experience: ' + context.parsed.y + '\nName: ' + fullname;
+                                },
+                            },
+                        },
+                    },
+                }
+            });
+        });
+</script>
+  <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ... (your existing pie chart script) ...
+ 
+            // ... (your existing bar chart script) ...
+ 
+            // Create a new canvas element for the employee skill level chart
+            var employeeSkillLevelChartCanvas = document.getElementById('employeeSkillLevelChart');
+            var employeeSkillLevelChartCtx = employeeSkillLevelChartCanvas.getContext('2d');
+ 
+            // Count the occurrence of each skill level for each employee
+            var skillLevelCounts = {};
+            var employeeNameElements = document.querySelectorAll('td:nth-child(2)'); // Selecting employee name column
+            var skillLevelElements = document.querySelectorAll('td:nth-child(4)'); // Selecting skill level column
+            var skillNameElements = document.querySelectorAll('td:nth-child(3)'); // Selecting skill name column
+ 
+            employeeNameElements.forEach(function (element, index) {
+                var employeeName = element.textContent.trim();
+                var skillLevel = skillLevelElements[index].textContent.trim();
+                var skillName = skillNameElements[index].textContent.trim();
+ 
+                if (!skillLevelCounts[employeeName]) {
+                    skillLevelCounts[employeeName] = {
+                        'Professional': {
+                            count: 0,
+                            skills: [],
+                        },
+                        'Novice': {
+                            count: 0,
+                            skills: [],
+                        },
+                        'Expert': {
+                            count: 0,
+                            skills: [],
+                        },
+                        'Awareness': {
+                            count: 0,
+                            skills: [],
+                        },
+                    };
+                }
+ 
+                skillLevelCounts[employeeName][skillLevel].count++;
+                skillLevelCounts[employeeName][skillLevel].skills.push(skillName);
+            });
+ 
+            var employeeNames = Object.keys(skillLevelCounts);
+            var skillLevelData = Object.values(skillLevelCounts);
+ 
+            // Render the employee skill level chart
+            var employeeSkillLevelChart = new Chart(employeeSkillLevelChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: employeeNames,
+                    datasets: [{
+                        label: 'Professional',
+                        data: skillLevelData.map(data => data.Professional.count),
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    }, {
+                        label: 'Novice',
+                        data: skillLevelData.map(data => data.Novice.count),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    }, {
+                        label: 'Expert',
+                        data: skillLevelData.map(data => data.Expert.count),
+                        backgroundColor: 'rgba(255, 206, 86, 0.5)',
+                    }, {
+                        label: 'Awareness',
+                        data: skillLevelData.map(data => data.Awareness.count),
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Employees'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Count'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function (context) {
+                                    return context[0].label; // Employee Name
+                                },
+                                label: function (context) {
+                                    var level = context.dataset.label;
+                                    var count = context.parsed.y;
+                                    var skills = skillLevelData.find(data => data[context.dataset.label].count === count)[level].skills;
+ 
+                                    // Display all skills in the tooltip without cutting off
+                                    var tooltipContent = `${level}: ${count}\nSkills: ${skills.join(', ')}`;
+                                    return tooltipContent;
+                                },
+                            },
+                            position: 'nearest', // Adjust tooltip position
+                            displayColors: false,
+                            itemSort: function (a, b) {
+                                return b.datasetIndex - a.datasetIndex; // Sort items by dataset index
+                            },
+                            maxHeight: 200, // Set a maximum height for the tooltip
+                        },
+                    },
+                }
+            });
+        });
+</script>
+ 
+ 
+ 
+  
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+ 
+ 
+ 
+ 
+ 
+<script>
+    function downloadHTMLPage() {
+        // Select the table element
+        const table = document.querySelector('table');
+ 
+        // Define the options for html2pdf
+        const options = {
+            filename: 'report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+        };
+ 
+        // Convert the table to PDF
+        html2pdf().from(table).set(options).save();
+    }
+</script>
+ 
+ 
+ 
+ 
+ 
+</head>
+</html>

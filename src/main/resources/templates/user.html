@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://cdn.materialdesignicons.com/6.0.39/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, skyblue, teal, white);
+/*              background-repeat: no-repeat;
+              background-size: cover;
+ */          
+
+    background-size: 100% 100vh;
+   color: #333;
+            margin: 0;
+            padding: 0;
+        }
+ 
+        .header {
+            /* background-color: #3498db; */
+            padding: -180px;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            margin-top: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+           color:rgb(7,10,112); 
+             /* color: linear-gradient(to right, rgb(255, 165, 0), rgb(0, 0, 255)); */
+        }
+ 
+        .container {
+            max-width: 756px;
+            margin: 167px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(23, 125, 156, 0.1);
+        }
+ 
+        h2 {
+            color: #3498db;
+        }
+ 
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+ 
+ 
+.dashboard-button {
+    text-decoration: none;
+}
+ 
+.dashboard-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+ 
+.dashboard-box:hover {
+    background-color: teal;
+    color: white;
+}
+ 
+.dashboard-box i {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+ 
+ 
+      .dashboard-button {
+    display: inline-block;
+    padding: 39px 35px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #cc2e3e;
+    color: white;
+    border-radius: 42px;
+     top: 50px; 
+    /* transition: background-color 0.3s ease-out; */
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+
+
+ .background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.background-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+ 
+        .dashboard-button:hover {
+            background-color: rgb(73, 114, 138);
+        }
+ 
+        .logout-button {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 14px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            float: right;
+            margin-top: -30px; /* Adjust the margin as needed */
+            
+        }
+ 
+        .logout-button:hover {
+            background-color: #c0392b;
+        }
+ 
+        .profile-icon {
+            float: right;
+            cursor: pointer;
+            color:#333;
+            margin-top: -25px;
+            margin-right:10px;
+          
+
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+
+
+        }
+         .msg1-icon {
+            float: right;
+            cursor: pointer;
+            color:black;
+            margin-top: -25px;
+            margin-right:40px;
+          
+
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+
+
+        }
+        .msg2-icon{
+        
+        float: right;
+            cursor: pointer;
+            color:black;
+            margin-top: -25px;
+            margin-right:70px;
+          
+
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        
+        }
+ 
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1;
+            border-radius: 5px;
+            text-align: left;
+            margin-top: 10px;
+        }
+ 
+        .dropdown a {
+            color: #333;
+            display: block;
+            padding: 8px 0;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+ 
+        /* Added style for modal */
+        #profileModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+ 
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            height: 55%;
+            width: 40%; /* Adjust the width as needed */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+ 
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+ 
+        /* Adjusted styles for user profile card */
+        .user-card-full {
+            overflow: hidden;
+            margin-top: 20px;
+            display: flex; /* Use flexbox for layout */
+            height: 105%;
+        }
+ 
+.user-profile {
+    background: -webkit-gradient(linear, left, right, from(#f29263), to(#ee5a6f));
+    background: linear-gradient(to right, #ee5a6f, #f29263);
+    color: white;
+    border-radius: 8px;
+    padding: 5px 10px; /* Decreased padding */
+    text-align: center;
+    width: 40%;
+    height:88%;
+    float: left;
+    font-size: 14px; /* Decreased font size */
+    line-height: 1.2; /* Adjusted line height */
+}
+ 
+.edit-button {
+    border: none; /* Remove border */
+    background: none; /* Remove background */
+    color: inherit; /* Inherits the text color */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+}
+ 
+.edit-button:hover {
+    color: #ccc; /* Change color on hover */
+}
+ 
+ 
+ 
+        .user-profile img {
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+ 
+.user-profile h6 {
+    margin: 0;
+    font-size: 18px;
+}
+ 
+.user-profile p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+ 
+.user-profile i {
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+ 
+.user-profile i:hover {
+    color: #3498db;
+}
+ 
+.status {
+    width: 50%; /* Adjusted width */
+    padding: 20px;
+    float: left; /* Align to the right of the user profile */
+    box-sizing: border-box; /* Include padding and border in the width calculation */
+}
+ 
+.status h6 {
+    margin: 0;
+    font-size: 18px;
+}
+ 
+.status p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+ 
+.status ul {
+    padding: 0;
+    list-style-type: none;
+}
+ 
+.status ul li {
+    display: inline-block;
+    margin-right: 10px;
+}
+ 
+.status ul li a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+ 
+.status ul li a:hover {
+    color: #2980b9;
+}
+ 
+.headerimg {
+        width: 100vw; /* Set width to 100% of the viewport width */
+        height: 40vh; /* Set height to 20% of the viewport height */
+        object-fit: cover; /* Maintain aspect ratio and cover the entire container */
+       
+    }
+   .edit-button{
+   margin-left:100px;
+   
+   top:-20px;
+    
+    top: 214px;
+    right: 595px;
+   position: absolute;
+ /*    bottom: 5px;
+    right: 5px; */
+    cursor: pointer;
+   }
+ 
+.dashboard-button i {
+    font-size: 48px;
+     /*line-height: 10px; Adjust the line height to vertically center the icon */
+    vertical-align: middle; /* Another way to center the icon vertically */
+}
+
+        .dashboard-button span {
+            display: block;
+            font-size: 18px;
+            
+        }
+         .logo-container {
+      position: absolute;
+    
+      top: 20px;
+      left: 10px;
+      
+    }
+    
+    .logo-container img {
+      background-color:white;
+      width: 192px !important; /* Adjust the width as needed */
+      height: 40px !important; /* Adjust the height as needed */
+    }
+
+    </style>
+</head>
+ 
+<body>
+   
+    <div class="header">
+    <div class="background-container">
+    <img src="https://assets.materialup.com/uploads/b6992fb2-7bf4-401d-a233-e34a486b9337/gif.gif" alt="Background GIF">
+</div>
+    
+        <h1>USER DASHBOARD</h1>
+       
+          <a th:href="@{/logout}"  title="Logout" class="logout-button" >Logout</a>
+            <div class="profile-icon"  title="Profile" onclick="toggleModal()">
+               <i class="fa-solid fa-user"></i>
+               </div>   
+               <div class="msg1-icon" >
+             <a th:href="@{/admin/Rdashboard}"  title="Send a Message!"> <i class="fa-regular fa-message"></i>
+    </a>           </div> 
+    
+    
+     <div class="msg2-icon" >
+             <a th:href="@{/user/Rdashboard}"  title="Received Messages!"> <i class="fa-solid fa-message"></i>
+    </a>           </div> 
+    
+    
+    
+    
+        <div class="logo-container">
+    <img src="https://torryharris.com/images/this25yersop2.gif" alt="Logo">
+  </div>
+    </div>
+    
+   
+    <div class="container">
+        <h2>Welcome, [[${user.getFullname()}]]</h2>
+ 
+        <span sec:authorize="isAuthenticated">
+           
+           
+            <div class="button-container">
+                <a th:href="@{/skilldet}" class="dashboard-button">
+                    <!-- <img src="path/to/view-skills-logo.png" alt="View Skills Logo"> -->
+                    <!-- <i class="material-icons">visibility</i> -->
+                    <i class="material-icons">visibility</i>
+                        <span>View Skills</span>
+              
+                </a>
+                <a th:href="@{/addSkillsForm}" class="dashboard-button">
+                    <!-- <img src="../static/images/add.jpg" alt="View Skills Logo"> -->
+                       <i class="material-icons">add_circle</i>
+                        <br><span>Add Skills</span>
+                    
+                </a>
+                <a href="/employeeskills" class="dashboard-button">
+                   <i class="material-icons">edit</i>
+                        <span>Update Skills</span>
+               
+                </a>
+                <a href="/deleteEmpSkills1" class="dashboard-button">
+                    
+                    <i class="material-icons">backspace</i>
+                        <span>Delete Skills</span>
+                    
+                </a>
+            </div>
+           
+        </span>
+    </div>
+ 
+    <!-- Bootstrap Modal -->
+    <div id="profileModal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleModal()">&times;</span>
+            <div class="card user-card-full">
+                <div class="user-profile">
+                      
+                    <div class="m-b-25">
+                        <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
+                    </div>
+                    <h6 class="f-w-600">[[${user.getFullname()}]]</h6>
+                    <p>[[${user.getDesignation()}]]</p>
+                     
+             
+                    <i class="mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
+                 
+                </div>
+                <div class="status">
+                 
+                <h4>Information</h4>
+                     
+           <button class="edit-button" onclick="openEditPage()">
+                              <i class="fa fa-pencil"></i>
+                         </button>
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h6 class="m-b-10 f-w-600">Email</h6>
+                            <hp class="text-muted f-w-400">[[${user.getEmail()}]]</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h6 class="m-b-10 f-w-600">Employee ID</h6>
+                            <p class="text-muted f-w-400">[[${user.getEmpid()}]]</p>
+                        </div>
+                    </div>
+                    <br>
+                    <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Status :</h6>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="m-b-10 f-w-600">[[${user.getProject()}]]</p>
+                            <h6 class="text-muted f-w-400">[[${user.getPro_desc()}]]</h6>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="m-b-10 f-w-600">Project Starts On: [[${user.getDateFrom()}]]</p>
+                            <p class="text-muted f-w-400">Project Ends On: [[${user.getDateTo()}]]</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <script>
+        function toggleModal() {
+            var modal = document.getElementById("profileModal");
+            modal.style.display = modal.style.display === "block" ? "none" : "block";
+        }
+        
+        
+        function openEditPage() {
+       
+        window.location.href = '/edit-employee-details';
+    }
+    </script>
+   
+    
+ 
+</body>
+ 
+ 
+ 
+ 
+</html>
+ 
+
+     

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sending Reminders</title>
+    <style>
+        /* Reset default margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        /* Body styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+           
+        }
+ 
+        /* Header styles */
+        header {
+            background-color: #a2c1e4;
+            padding: 21px 9px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        header img {
+            width: 160px;
+            height: auto;
+        }
+ 
+        .logout-container {
+            margin-right: 20px;
+        }
+ 
+        .home-button,
+        .logout-button {
+            background-color: #08223d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .home-button:hover,
+        .logout-button:hover {
+            background-color: #376b96;
+        }
+ 
+        /* Main content container */
+        .container {
+            max-width: 491px; /* Adjust as needed */
+            margin: 20px auto;
+            padding: 20px;
+            background: #8ab0d7;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+ 
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+ 
+        label {
+            display: block;
+            margin-top: 17px;
+            font-weight: 700;
+            color: black;
+            text-align: left;
+        }
+ 
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+ 
+        #selectAllCheckbox {
+        
+            margin-left: 0px;
+        }
+ 
+        textarea {
+            width: calc(100% - 30px);
+            padding: 15px;
+            margin: 15px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+ 
+        button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+ 
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+     <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.querySelector('form');
+
+        form.addEventListener('submit', function (event) {
+            // Prevent the form from submitting immediately
+            event.preventDefault();
+
+            var checkboxes = document.getElementsByName('userIds');
+            var message = document.getElementById('message').value;
+
+            // Check if at least one checkbox is selected
+            var atLeastOneChecked = Array.from(checkboxes).some(function (checkbox) {
+                return checkbox.checked;
+            });
+
+            if (!atLeastOneChecked) {
+                alert('Please select at least one checkbox.');
+            } else {
+                // Check if the message is not empty
+                if (message.trim() === '') {
+                    alert('Please enter a reminder message.');
+                } else {
+                    // If everything is valid, submit the form
+                    form.submit();
+                    alert('Reminder sent successfully!');
+                }
+            }
+        });
+    });
+
+</script>
+</head>
+<body>
+<header>
+    <img src="https://torryharris.com/images/this25yersop2.gif" alt="Torry Harris Logo">
+    <h2>Send a Reminder</h2>
+    <div class="logout-container">
+        <a href="/admin-page" class="home-button">Home</a>
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</header>
+ 
+<div class="container">
+<div>
+   <form action="/sendReminder" method="post" onsubmit="showSuccessAlert()">
+   
+<h2>Reminders 🔔</h2>
+    <label>Select User(s):</label><br>
+    <!-- Select All Checkbox -->
+    <input type="checkbox" id="selectAllCheckbox">
+    <label for="selectAllCheckbox" style="color: black;"></label><br>
+    
+    <!-- User Checkboxes -->
+  <!--   <th:block th:each="user : ${users}">
+        <label style="color: black;">
+            <input type="checkbox" name="userIds" th:value="${user.empid}">
+            <span th:text="${user.fullname}"></span>
+        </label><br>
+    </th:block> -->
+    
+        <!-- User Checkboxes -->
+<label style="color: black;" th:each="user : ${users}">
+    <input type="checkbox" name="userIds" th:value="${user.empid}" />
+    <span th:text="${user.fullname}"></span><br>
+</label>
+
+
+    <br>
+    <label for="message" style="color: black;">Reminder Message:</label><br>
+    <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+    <button type="submit">Send Reminder</button>
+</form>
+ 
+</div>
+</div>
+ 
+ 
+<script>
+    // Function to handle Select All checkbox
+    document.getElementById('selectAllCheckbox').addEventListener('change', function() {
+        var checkboxes = document.getElementsByName('userIds');
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = this.checked;
+        }
+    });
+</script>
+</body>
+</html>

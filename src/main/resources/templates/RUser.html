@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receiving Reminders</title>
+    <style>
+        /* Reset default margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        /* Body styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+ 
+        /* Header styles */
+        header {
+            background-color: #a2c1e4;
+            padding: 21px 9px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+ 
+        header img {
+            width: 160px;
+            height: auto;
+        }
+ 
+        .logout-container {
+            margin-right: 20px;
+        }
+ 
+        .home-button,
+        .logout-button {
+            background-color: #08223d;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .home-button:hover,
+        .logout-button:hover {
+            background-color: #376b96;
+        }
+ 
+        /* Main content container */
+        .reminder-section {
+            background: #8ab0d7;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            margin-top: 20px;
+        }
+ 
+        h2 {
+            color: #007bff;
+        }
+ 
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+ 
+        li {
+            margin: 10px 0;
+            color: #333;
+        }
+ 
+        button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+ 
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="https://torryharris.com/images/this25yersop2.gif" alt="Torry Harris Logo">
+    <h2>Send a Reminder</h2>
+    <div class="logout-container">
+        <a href="/user-page" class="home-button">Home</a>
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</header>
+ 
+<div class="reminder-section">
+    <h2>Your Reminders ✉</h2>
+    <ul id="reminderList">
+        <li th:each="reminderMessage : ${reminderMessages}" style="color: #333;">
+            <span th:text="${reminderMessage}"></span>
+        </li>
+    </ul>
+    <button onclick="deleteAllReminders()">Delete All</button>
+</div>
+ 
+<script>
+    function deleteAllReminders() {
+        fetch('/deleteAllReminders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Refresh the page after successful deletion
+                location.reload();
+            } else {
+                // Handle error
+                console.error('Failed to delete reminders');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting reminders:', error);
+        });
+    }
+ 
+    // Function to fetch reminder messages and display them
+    function fetchReminderMessages() {
+        fetch('/user/fetchReminderMessages')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch reminder messages');
+                }
+                return response.json(); // Parse response as JSON
+            })
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    const reminderList = document.getElementById('reminderList');
+                    reminderList.innerHTML = ''; // Clear existing list
+                    data.forEach(reminderMessage => {
+                        const li = document.createElement('li');
+                        li.textContent = reminderMessage;
+                        reminderList.appendChild(li);
+                    });
+                } else {
+                    console.log('No reminder messages found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching or parsing reminder messages:', error);
+            });
+    }
+ 
+    // Call fetchReminderMessages function when the page loads
+    window.onload = fetchReminderMessages;
+</script>
+ 
+</body>
+</html>
