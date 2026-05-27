@@ -83,21 +83,7 @@ The repository includes both root-level screenshots (for the README) and static 
 
 ![Update / Edit skill UI](images/Update.png)
 
----
 
-### In-app static assets (served from `src/main/resources/static/images/`)
-
-![Add skill form](src/main/resources/static/images/addskill.jpg)
-
-![Skill catalog icon](src/main/resources/static/images/skills.png)
-
-![Report visual](src/main/resources/static/images/report.png)
-
-![Update skill icon](src/main/resources/static/images/update-skill-icon.jpg)
-
-![Professional banner](src/main/resources/static/images/professional.jpg)
-
-![Hero image](src/main/resources/static/images/hero-img.svg)
 
 These assets appear in the Thymeleaf templates under `src/main/resources/templates/`. Replace any image by updating the corresponding file in `static/images` or the `images/` folder for README screenshots.
 
