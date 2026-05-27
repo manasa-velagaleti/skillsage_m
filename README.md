@@ -72,7 +72,7 @@ Root images (screenshots):
 - `images/AdminPage.png` — Admin dashboard showing user management and reports.
 - `images/EmployeeHome.png` — Employee home page / dashboard.
 - `images/EmployeeHome2.png` — Alternative view of employee dashboard.
-- `images/Skill Analysis.png` — Skill analysis visuals (domain heatmap and proficiency charts).
+- `images/Skill_Analysis.png` — Skill analysis visuals (domain heatmap and proficiency charts).
 - `images/search.png` — Skill search UI and results.
 - `images/Update.png` — Update skill / edit UI.
 
